@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: mp12-premium
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+      - name: mp12-premium
+        image: derekshen/mp12:v1
+        env:
+        - name: DATASET
+          value: "kmnist"
+        - name: TYPE
+          value: "cnn"
+        resources:
+          limits:
+            cpu: "900m"
+      restartPolicy: Never
+  backoffLimit: 4

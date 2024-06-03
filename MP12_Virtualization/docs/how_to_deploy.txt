@@ -1,0 +1,56 @@
+Setting up EC2 host for eskctl
+Install aws:
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+Then use
+
+aws configure
+to manage account credentials.
+
+Install kubectl. Make sure to install kubectl before trying to create EKS using eksctl. Otherwise kubectl cannot interface with EKS.
+
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+kubectl version --short --client
+
+Install eksctl
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+STEPS:
+1. Prepare image (local pc)
+2. Test image build (local pc)
+3. Push image to docker build public repository (create the repository first) (local pc)
+	# Tag the image: user/repo:image-name
+	# Push image to repo (public repo)
+4. Prepare environment (EC2 instance from now on):
+	# Install asws client:
+	# Run AWS Configure
+	# Install kubectl
+	# Install eksctl
+	# Install docker
+	# Change permissions for docker.sock
+        # Start docker daemon
+5. Pull your docker image
+6. Deploy cluster with eksctl "eksctl create cluster -f cluster.yaml"; "eksctl delete cluster -f cluster.yaml"
+7. Test job via kubectl and using a free-job yaml: "minikube start" for local cluster; "kubectl create -f free-job.yaml"; "kubectl create -f premium-job.yaml"; "kubectl get jobs -A --all-namespaces"
+8. Prepare for free jobs:
+	# Create namespace for free service: "kubectl create namespace free-service", "kubectl get namespaces --show-labels"
+	# Apply pods quota to free namespace using another yaml: "kubectl apply -f free-resource.yaml --namespace=free-service"
+9. Create your server.py
+10. Prepare for server.py
+	# Install kubernetes and flask
+11. Run server:
+12. Test using postman
+13. Stop server, delete all jobs created during test
+13. Submit using test.py
+14. Delete cluster
+15. Delete auto-scaling group
+16. Stop and terminate instances
+17. Delete your AWS account!
